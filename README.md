@@ -90,23 +90,6 @@ the same for Dart. The boilerplate is generated for you, leaving you to
 specify which fields you need and to add code for the behaviour of the
 class.
 
-#### Generating boilerplate for Value Types
-
-Value types require a bit of boilerplate in order to connect it to generated
-code. Luckily, even this bit of boilerplate can be got automated using code
-snippets support in your favourite text editor. For example, in IntelliJ you
-can use following live template:
-
-```dart
-abstract class $CLASS_NAME$ implements Built<$CLASS_NAME$, $CLASS_NAME$Builder> {
-  $CLASS_NAME$._();
-  factory $CLASS_NAME$([void Function($CLASS_NAME$Builder) updates]) = _$$$CLASS_NAME$;
-}
-```
-
-Using this template you would only have to manually enter a name of your data
-class name which is something that can't be automated.
-
 ### Enum Class
 
 Enum Classes provide classes with enum features.
@@ -196,6 +179,23 @@ If using a version before v5.2.0, codegen is triggered via either a
 to do a one-off build or a
 [watch.dart](https://github.com/google/built_value.dart/blob/92783c27a08ac3c73f28bb08736b9d4a30fa3b7e/example/tool/watch.dart)
 to continuously watch your source and update generated output.
+
+#### Generating boilerplate for Value Types
+
+Value types require a bit of boilerplate in order to connect it to generated
+code. Luckily, even this bit of boilerplate can be got automated using code
+snippets support in your favourite text editor. For example, in IntelliJ you
+can use following live template:
+
+```dart
+abstract class $CLASS_NAME$ implements Built<$CLASS_NAME$, $CLASS_NAME$Builder> {
+  $CLASS_NAME$._();
+  factory $CLASS_NAME$([void Function($CLASS_NAME$Builder) updates]) = _$$$CLASS_NAME$;
+}
+```
+
+Using this template you would only have to manually enter a name of your data
+class name which is something that can't be automated.
 
 ### Simple example
 
