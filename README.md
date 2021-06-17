@@ -250,9 +250,11 @@ abstract class Person implements Built<Person, PersonBuilder> {
 
 After writing this class you should run codegen as described in [Codegen](#Codegen) section. 
 
-### Built value serialization format
+TODO: toJson, fromJson, serializers global variable
 
 ### Writing custom serializers
+
+#### Built value serialization format
 
 ### Plugins
 
