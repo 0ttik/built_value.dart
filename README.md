@@ -254,19 +254,19 @@ After writing this class you should run codegen as described in [Codegen](#Codeg
 
 You can also add helper methods to the previous example: 
 
-```
-  Map<String, dynamic> toJson() {
-    return serializers.serializeWith(Person.serializer, this)! as Map<String, dynamic>;
-  }
+```dart
+Map<String, dynamic> toJson() {
+  return serializers.serializeWith(Person.serializer, this)! as Map<String, dynamic>;
+}
 
-  static Person fromJson(Map<String, dynamic> json) {
-    return serializers.deserializeWith(Person.serializer, json)!;
-  }
+static Person fromJson(Map<String, dynamic> json) {
+  return serializers.deserializeWith(Person.serializer, json)!;
+}
 ```
 
 To make this work you should create global `serializers` variable and rerun codegen:
 
-```
+```dart
 @SerializersFor([
   Person,
 ])
@@ -299,7 +299,7 @@ A correct fix for this is planned, but until then, the only way to make
 this work is to omit the `Built` interface from the base type as done
 here. See https://github.com/google/built_value.dart/issues/352
 
-```
+```dart
 @BuiltValue(instantiable: false)
 abstract class Animal extends Object with Walker implements OtherInterface {
   @override
