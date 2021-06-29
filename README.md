@@ -250,7 +250,32 @@ abstract class Person implements Built<Person, PersonBuilder> {
 
 After writing this class you should run codegen as described in [Codegen](#Codegen) section. 
 
-TODO: toJson, fromJson, serializers global variable
+#### toJson/fromJson
+
+You can also add helper methods to the previous example: 
+
+```
+  Map<String, dynamic> toJson() {
+    return serializers.serializeWith(Person.serializer, this)! as Map<String, dynamic>;
+  }
+
+  static Person fromJson(Map<String, dynamic> json) {
+    return serializers.deserializeWith(Person.serializer, json)!;
+  }
+```
+
+To make this work you should create global `serializers` variable and rerun codegen:
+
+```
+@SerializersFor([
+  Person,
+])
+final Serializers serializers = (_$serializers.toBuilder()
+      ..addPlugin(StandardJsonPlugin()) // Example of using plugin
+      ..add(ColorSerializer()) // Example of manually added serializer
+      ..add(GeoFirePointSerializer())) // Example of manually added serializer
+    .build();
+```
 
 ### Hierarchical model
 
