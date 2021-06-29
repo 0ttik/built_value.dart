@@ -197,6 +197,8 @@ abstract class $CLASS_NAME$ implements Built<$CLASS_NAME$, $CLASS_NAME$Builder> 
 Using this template you would only have to manually enter a name of your data
 class name which is something that can't be automated.
 
+See [Tools](#Tools).
+
 ### Simple example
 
 While full, compiled examples are available in
