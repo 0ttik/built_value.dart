@@ -13,6 +13,8 @@ Immutable collections are from
 
 See the [API docs](https://pub.dev/documentation/built_value/latest/built_value/built_value-library.html).
 
+See [Usage](#Usage) section for information about features and usage. 
+
 ## Articles
 
 - [`built_value` for Immutable Object Models](https://medium.com/@davidmorgan_14314/darts-built-value-for-immutable-object-models-83e2497922d4#.48dyezxcl)
@@ -53,23 +55,9 @@ built_value.
 Simple examples are
 [here](https://github.com/google/built_value.dart/tree/master/example/lib/example.dart).
 
-Since `v5.2.0` codegen is triggered by running `pub run build_runner build` to
-do a one-off build or `pub run build_runner watch` to continuously watch your
-source and update the generated output when it changes. Note that you need a
-dev dependency on `built_value_generator` and `build_runner`. See the example
-[pubspec.yaml](https://github.com/google/built_value.dart/blob/master/example/pubspec.yaml).
+## Theory
 
-If using Flutter, the equivalent command is `flutter packages pub run build_runner build`.
-Alternatively, put your `built_value` classes in a separate Dart package with no dependency
-on Flutter. You can then use `built_value` as normal.
-
-If using a version before v5.2.0, codegen is triggered via either a
-[build.dart](https://github.com/google/built_value.dart/blob/92783c27a08ac3c73f28bb08736b9d4a30fa3b7e/example/tool/build.dart)
-to do a one-off build or a
-[watch.dart](https://github.com/google/built_value.dart/blob/92783c27a08ac3c73f28bb08736b9d4a30fa3b7e/example/tool/watch.dart)
-to continuously watch your source and update generated output.
-
-## Value Types
+### Value Types
 
 Value types are, for our purposes, classes that are considered
 interchangeable if their fields have the same values.
@@ -102,24 +90,7 @@ the same for Dart. The boilerplate is generated for you, leaving you to
 specify which fields you need and to add code for the behaviour of the
 class.
 
-### Generating boilerplate for Value Types
-
-Value types require a bit of boilerplate in order to connect it to generated
-code. Luckily, even this bit of boilerplate can be got automated using code
-snippets support in your favourite text editor. For example, in IntelliJ you
-can use following live template:
-
-```dart
-abstract class $CLASS_NAME$ implements Built<$CLASS_NAME$, $CLASS_NAME$Builder> {
-  $CLASS_NAME$._();
-  factory $CLASS_NAME$([void Function($CLASS_NAME$Builder) updates]) = _$$$CLASS_NAME$;
-}
-```
-
-Using this template you would only have to manually enter a name of your data
-class name which is something that can't be automated.
-
-## Enum Class
+### Enum Class
 
 Enum Classes provide classes with enum features.
 
@@ -135,7 +106,7 @@ Design:
 - Generated `values` method that returns all the enum values in a `BuiltSet` (immutable set)
 - Generated `valueOf` method that takes a `String`
 
-## Serialization
+### Serialization
 
 Built Values comes with JSON serialization support which allows you to
 serialize a complete data model of Built Values, Enum Classes and
@@ -189,7 +160,46 @@ languages didn't materialize as servers are typically either written in Dart
 or owned by third parties. Please open an issue if you'd like to explore
 support in more languages.
 
-## Common Usage
+## Usage
+
+### Codegen
+
+Since `v5.2.0` codegen is triggered by running `pub run build_runner build` to
+do a one-off build or `pub run build_runner watch` to continuously watch your
+source and update the generated output when it changes. Note that you need a
+dev dependency on `built_value_generator` and `build_runner`. See the example
+[pubspec.yaml](https://github.com/google/built_value.dart/blob/master/example/pubspec.yaml).
+
+If using Flutter, the equivalent command is `flutter packages pub run build_runner build`.
+Alternatively, put your `built_value` classes in a separate Dart package with no dependency
+on Flutter. You can then use `built_value` as normal.
+
+If using a version before v5.2.0, codegen is triggered via either a
+[build.dart](https://github.com/google/built_value.dart/blob/92783c27a08ac3c73f28bb08736b9d4a30fa3b7e/example/tool/build.dart)
+to do a one-off build or a
+[watch.dart](https://github.com/google/built_value.dart/blob/92783c27a08ac3c73f28bb08736b9d4a30fa3b7e/example/tool/watch.dart)
+to continuously watch your source and update generated output.
+
+#### Generating boilerplate for Value Types
+
+Value types require a bit of boilerplate in order to connect it to generated
+code. Luckily, even this bit of boilerplate can be got automated using code
+snippets support in your favourite text editor. For example, in IntelliJ you
+can use following live template:
+
+```dart
+abstract class $CLASS_NAME$ implements Built<$CLASS_NAME$, $CLASS_NAME$Builder> {
+  $CLASS_NAME$._();
+  factory $CLASS_NAME$([void Function($CLASS_NAME$Builder) updates]) = _$$$CLASS_NAME$;
+}
+```
+
+Using this template you would only have to manually enter a name of your data
+class name which is something that can't be automated.
+
+See [Tools](#Tools).
+
+### Simple example
 
 While full, compiled examples are available in
 [`example/lib`](https://github.com/google/built_value.dart/tree/master/example/lib),
@@ -207,8 +217,8 @@ a client for a JSON API representing a person that looks like the following:
 
 The corresponding dart class employing `built_value` might look like this. Note
 that it is using the
-[`@nullable`](https://pub.dev/documentation/built_value/latest/built_value/nullable-constant.html)
-annotation to indicate that the field does not have to be present on the
+`?` dart syntax (for versions before nullsafety [`@nullable`](https://pub.dev/documentation/built_value/latest/built_value/nullable-constant.html)
+annotation could be used) to indicate that the field does not have to be present on the
 response, as well as the
 [`@BuiltValueField`](https://pub.dev/documentation/built_value/latest/built_value/BuiltValueField-class.html)
 annotation to map between the property name on the response and the name of the
@@ -226,23 +236,148 @@ abstract class Person implements Built<Person, PersonBuilder> {
 
   // Can never be null.
   int get id;
+  
+  // Can be null.
+  int? get age;
 
-  @nullable
-  int get age;
-
-  @nullable
   @BuiltValueField(wireName: 'first_name')
-  String get firstName;
-
-  @nullable
-  BuiltList<String> get hobbies;
+  String? get firstName;
+  
+  BuiltList<String>? get hobbies;
 
   Person._();
   factory Person([void Function(PersonBuilder) updates]) = _$Person;
 }
 ```
 
+After writing this class you should run codegen as described in [Codegen](#Codegen) section. 
+
+#### toJson/fromJson
+
+You can also add helper methods to the previous example: 
+
+```dart
+Map<String, dynamic> toJson() {
+  return serializers.serializeWith(Person.serializer, this)! as Map<String, dynamic>;
+}
+
+static Person fromJson(Map<String, dynamic> json) {
+  return serializers.deserializeWith(Person.serializer, json)!;
+}
+```
+
+To make this work you should create global `serializers` variable and rerun codegen:
+
+```dart
+@SerializersFor([
+  Person,
+])
+final Serializers serializers = (_$serializers.toBuilder()
+      ..addPlugin(StandardJsonPlugin()) // Example of using plugin
+      ..add(ColorSerializer()) // Example of manually added serializer
+      ..add(GeoFirePointSerializer())) // Example of manually added serializer
+    .build();
+```
+
+### Hierarchical model
+
+`built_value` currently doesn't fully support extending/implementing another instantiatable `Built` class.
+
+Built Value classes and builders can implement interfaces and use mixins as
+any other class.
+
+One special case is if you want to `rebuild` instances via an interface.
+Then, the interface needs to implement `Built`, but should not itself be
+instantiated. You can do this by marking the class `instantiable: false`,
+as here.
+
+Very little code is generated for a non-instantiable Built Value; just the
+interface for the builder. You can write this yourself if you prefer, then
+nothing will be generated.
+
+Note that dart2js has never supported implementing the same interface
+with different generics, and in Dart 2 none of the runtimes supports it.
+A correct fix for this is planned, but until then, the only way to make
+this work is to omit the `Built` interface from the base type as done
+here. See https://github.com/google/built_value.dart/issues/352
+
+```dart
+@BuiltValue(instantiable: false)
+abstract class Animal extends Object with Walker implements OtherInterface {
+  @override
+  int get legs;
+
+  Animal rebuild(void Function(AnimalBuilder) updates);
+  AnimalBuilder toBuilder();
+}
+
+// Check a second layer of `instantiable: false` inheritance.
+@BuiltValue(instantiable: false)
+abstract class Mammal implements Animal {
+  @override
+  Mammal rebuild(void Function(MammalBuilder) updates);
+  @override
+  MammalBuilder toBuilder();
+}
+
+abstract class Cat extends Object
+    with Walker
+    implements Mammal, Built<Cat, CatBuilder> {
+  static Serializer<Cat> get serializer => _$catSerializer;
+
+  bool get tail;
+
+  factory Cat([void Function(CatBuilder) updates]) = _$Cat;
+  Cat._();
+}
+```
+
+### Writing custom serializers
+
+#### Built value serialization format
+
+### Plugins
+
 ## FAQ
+
+### How do I check a field is valid on instantiation?
+
+The value class private constructor runs when all fields are initialized and
+can do arbitrary checks:
+
+```dart
+abstract class MyValue {
+  MyValue._() {
+    if (field < 0) {
+      throw ArgumentError(field, 'field', 'Must not be negative.');
+    }
+  }
+```
+
+### How do I process a field on instantiation?
+
+Add a hook that runs immediately before a builder is built. For example, you
+could sort a list, so it's always sorted directly before the value is created:
+
+```dart
+abstract class MyValue {
+  @BuiltValueHook(finalizeBuilder: true)
+  static void _sortItems(MyValueBuilder b) =>
+      b..items.sort();
+```
+
+### How do I set a default for a field?
+
+Add a hook that runs whenever a builder is created:
+
+```dart
+abstract class MyValue {
+  @BuiltValueHook(initializeBuilder: true)
+  static void _setDefaults(MyValueBuilder b) =>
+      b
+        ..name = 'defaultName'
+        ..count = 0;
+```
 
 ### Should I check in and/or publish in the generated `.g.dart` files?
 
